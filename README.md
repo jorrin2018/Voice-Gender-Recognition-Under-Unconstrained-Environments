@@ -111,16 +111,17 @@ dataset/
 - Muestras totales: ~123,000
 - División: 90% entrenamiento, 10% prueba
 - Balanceado por género
+- Accuracy: 98.95%
 
 ## 👥 Autores
 
-- Jorge Luis Jorrin
+- MSc. Jorge Luis Jorrin
 - Asesores:
   - Dra. Mariko Nakano
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está bajo la Licencia GNU GENERAL PUBLIC LICENSE - ver el archivo [LICENSE](LICENSE) para más detalles.
 
 ## 🔗 Referencias
 
