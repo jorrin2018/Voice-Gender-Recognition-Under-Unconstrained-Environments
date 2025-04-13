@@ -41,11 +41,9 @@ Sistema de clasificación automática del género del hablante utilizando caract
 - Bandas Mel: 224
 
 ### Arquitectura CNN
-- Capa convolucional (1->16 canales)
-- ReLU
-- MaxPooling
-- Fully connected (16*32*32 -> 128)
-- Fully connected (128 -> num_classes)
+- Vgg16
+- MobileNet
+- ResNet50
 
 ## 🔧 Requisitos
 
