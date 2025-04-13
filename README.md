@@ -113,7 +113,7 @@ dataset/
 
 ## 👥 Autores
 
-- MSc. Jorge Luis Jorrin
+- MSc. Jorge Luis Jorrin (jljorrincoz@gmail.com)
 - Asesores:
   - Dra. Mariko Nakano
 
@@ -124,4 +124,4 @@ Este proyecto está bajo la Licencia GNU GENERAL PUBLIC LICENSE - ver el archivo
 ## 🔗 Referencias
 
 - [VoxCeleb Dataset](http://www.robots.ox.ac.uk/~vgg/data/voxceleb/)
-- Enlaces a papers relevantes
+- [Voice Gender Recognition Under Unconstrained Environments Using Fine-Tuned CNNs](https://ebooks.iospress.nl/DOI/10.3233/FAIA240379)
