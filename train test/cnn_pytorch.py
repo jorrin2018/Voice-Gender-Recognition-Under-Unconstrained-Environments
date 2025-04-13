@@ -1,22 +1,30 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Sep 27 22:55:09 2023
+Script de implementación de una Red Neuronal Convolucional (CNN) en PyTorch
+Este script implementa un clasificador de género de voz utilizando una CNN
+que procesa espectrogramas de señales de audio.
+
+Características:
+- Modelo CNN personalizado para clasificación binaria
+- Carga y preprocesamiento de datos de espectrogramas
+- Pipeline completo de entrenamiento y evaluación
+- Soporte para GPU si está disponible
 
 @author: MCIM
 """
 
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import torchvision.transforms as transforms
-from torchvision.datasets import ImageFolder
-from torch.utils.data import DataLoader, Dataset, model
+import torch  # Framework principal de deep learning
+import torch.nn as nn  # Módulos de redes neuronales
+import torch.optim as optim  # Optimizadores
+import torchvision.transforms as transforms  # Transformaciones de datos
+from torchvision.datasets import ImageFolder  # Para cargar imágenes organizadas en carpetas
+from torch.utils.data import DataLoader, Dataset  # Para manejo de datos
 
-# Definir transformaciones de datos
+# Definir transformaciones para los datos
 transform = transforms.Compose([
-    transforms.Resize((128, 128)),  # Ajusta el tamaño de los espectrogramas
-    transforms.ToTensor(),  # Convierte los espectrogramas en tensores
-    transforms.Normalize(mean=[0.5], std=[0.5])  # Normaliza los valores de píxeles
+    transforms.Resize((128, 128)),  # Redimensionar todas las imágenes a 128x128
+    transforms.ToTensor(),  # Convertir imágenes a tensores
+    transforms.Normalize(mean=[0.5], std=[0.5])  # Normalizar valores de píxeles
 ])
 
 # Ruta de la carpeta principal que contiene las subcarpetas de clases
@@ -28,8 +36,17 @@ dataset = ImageFolder(root=carpeta_principal, transform=transform)
 # Crear un DataLoader para cargar los datos en lotes durante el entrenamiento
 data_loader = DataLoader(dataset, batch_size=64, shuffle=True)
 
-# Definir la arquitectura de la CNN
 class CNN(nn.Module):
+    """
+    Modelo de Red Neuronal Convolucional para clasificación de género
+    
+    Arquitectura:
+    - Capa convolucional (1->16 canales)
+    - ReLU
+    - MaxPooling
+    - Fully connected (16*32*32 -> 128)
+    - Fully connected (128 -> num_classes)
+    """
     def __init__(self, num_classes):
         super(CNN, self).__init__()
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, stride=1, padding=1)
@@ -39,21 +56,32 @@ class CNN(nn.Module):
         self.fc2 = nn.Linear(128, num_classes)
         
     def forward(self, x):
-        x = self.conv1(x)
-        x = self.relu(x)
-        x = self.maxpool(x)
-        x = x.view(x.size(0), -1)
-        x = self.fc1(x)
-        x = self.fc2(x)
+        """
+        Forward pass del modelo
+        
+        Args:
+            x: Tensor de entrada (batch de espectrogramas)
+        
+        Returns:
+            Tensor con las predicciones de clase
+        """
+        x = self.conv1(x)  # Capa convolucional
+        x = self.relu(x)   # Activación ReLU
+        x = self.maxpool(x)  # Max pooling
+        x = x.view(x.size(0), -1)  # Aplanar el tensor
+        x = self.fc1(x)  # Primera capa fully connected
+        x = self.fc2(x)  # Capa de salida
         return x
 
-transform = transforms.Compose([
-    transforms.ToTensor(),  # Convierte los espectrogramas en tensores
-    transforms.Normalize(mean=[0.5], std=[0.5])  # Normaliza los valores de píxeles
-])
-
-# Crea un Dataset personalizado para tus datos de espectrogramas
 class SpectrogramDataset(Dataset):
+    """
+    Dataset personalizado para manejar espectrogramas
+    
+    Args:
+        data: Array de espectrogramas
+        labels: Array de etiquetas
+        transform: Transformaciones a aplicar
+    """
     def __init__(self, data, labels, transform=None):
         self.data = data
         self.labels = labels

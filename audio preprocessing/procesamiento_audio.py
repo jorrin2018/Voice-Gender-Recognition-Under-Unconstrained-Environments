@@ -1,25 +1,37 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Sep 18 16:42:20 2023
+Script para el procesamiento de señales de audio
+Este script realiza el análisis y visualización de archivos de audio WAV, generando:
+- Audiogramas (forma de onda)
+- Espectrogramas
+- Espectrogramas de Mel
+- Coeficientes MFCC
+
+El script está diseñado para procesar audios de voces masculinas y femeninas
+del dataset VoxCeleb.
 
 @author: MCIM
 """
-import os
-import numpy as np
-import librosa
-import librosa.display
-import matplotlib.pyplot as plt
-samplerate=[]
-lista_elementos=[]
-lista_ruta=[]
 
-# Ruta de la carpeta raíz que deseas explorar
+# Importación de librerías necesarias
+import os  # Para manejo de archivos y directorios
+import numpy as np  # Para operaciones numéricas
+import librosa  # Para procesamiento de audio
+import librosa.display  # Para visualización de características de audio
+import matplotlib.pyplot as plt  # Para graficación
+
+# Inicialización de variables globales
+samplerate = []  # Lista para almacenar las frecuencias de muestreo
+lista_elementos = []  # Lista para almacenar nombres de archivos
+lista_ruta = []  # Lista para almacenar rutas de archivos
+
+# Configuración de rutas y parámetros
 carpeta_raiz = 'E:/JORRIN/TESIS/DATASET/vox1_dev_wav/wav/id1'
 
-#VoxCeleb ID a analizar
+# IDs de VoxCeleb a analizar (10 diferentes hablantes)
 lista=['0001','0006','0002','0014','0009','0007','0010','0013','0018','0026']
 
-#lista con la ruta completa
+# Generar lista con rutas completas para cada ID
 lista_carpeta_raiz=[]
 for i in range(10):
     lista_carpeta_raiz.append(carpeta_raiz+lista[i])
@@ -118,8 +130,8 @@ for i in range(10):
     
     # Mostrar la gráfica
     plt.show()
-        
-          
-  
-    
-    
+
+
+
+
+

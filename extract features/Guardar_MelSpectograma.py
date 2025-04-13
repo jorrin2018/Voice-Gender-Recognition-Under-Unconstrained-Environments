@@ -1,40 +1,49 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jul 30 12:42:48 2023
+Script para la generación y almacenamiento de Espectrogramas Mel
+Este script toma archivos de audio WAV y genera sus representaciones
+en forma de espectrogramas Mel, guardándolos como imágenes.
 
-Genera Mel_Spectrograma (db)
-Displegar en la pantalla
-Guardar en archivo como imagen
+Características principales:
+- Procesa audios del dataset VoxCeleb
+- Genera espectrogramas Mel normalizados
+- Guarda las imágenes en formato JPG
+- Organiza las imágenes en carpetas según género (male/female)
 
 @author: Mariko Nakano 
-
 """
-import librosa
-import numpy as np
-import matplotlib.pyplot as plt
-from PIL import Image
-import os
 
+# Importación de librerías necesarias
+import librosa  # Para procesamiento de audio
+import numpy as np  # Para operaciones numéricas
+import matplotlib.pyplot as plt  # Para visualización
+from PIL import Image  # Para manejo de imágenes
+import os  # Para operaciones de sistema de archivos
 
+# Definición de rutas para archivos de entrada y salida
 carpeta_raiz_female = 'E:/JORRIN/TESIS/DATASET/AUDIOS/train/female'
 carpeta_raiz_male = 'E:/JORRIN/TESIS/DATASET/AUDIOS/train/male'
-#carpeta_raiz_test_female = 'E:/JORRIN/TESIS/DATASET/AUDIOS/prueba/test/female'
-#carpeta_raiz_test_male = 'E:/JORRIN/TESIS/DATASET/AUDIOS/prueba/test/male'
 output_folder_female = 'E:/JORRIN/TESIS/DATASET/IMAGENES/probe/melspectograma/test/female'
 output_folder_male = 'E:/JORRIN/TESIS/DATASET/IMAGENES/probe/melspectograma/male'
-#output_folder_test_female = 'E:/JORRIN/TESIS/DATASET/IMAGENES/melspectograma/test/female'
-#output_folder_test_male = 'E:/JORRIN/TESIS/DATASET/IMAGENES/melspectograma/test/male'
 
 def hacer_espectograma(carpeta_raiz, output_folder):
-    #### Parametros de datos
-    sr = 16000
-    n_data = 48000   # numero de datos
-    ##### Parametros de Melspectrograma
-    n_fft = 1024
-    win_length = n_fft   # predeterminado 
-    hop_length = 160
-    window = "hann" # predeterminado
-    n_mels =224
+    """
+    Función principal para generar y guardar espectrogramas Mel
+    
+    Parámetros:
+    carpeta_raiz (str): Ruta a la carpeta con los archivos de audio
+    output_folder (str): Ruta donde se guardarán las imágenes generadas
+    """
+    # Parámetros de la señal de audio
+    sr = 16000  # Frecuencia de muestreo
+    n_data = 48000  # Número de muestras
+    
+    # Parámetros para el cálculo del espectrograma Mel
+    n_fft = 1024  # Tamaño de la ventana FFT
+    win_length = n_fft  # Longitud de la ventana de análisis
+    hop_length = 160  # Tamaño del salto entre ventanas
+    window = "hann"  # Tipo de ventana
+    n_mels = 224  # Número de bandas Mel
     center = False
     n_tbin = int(n_data/hop_length)+1
     

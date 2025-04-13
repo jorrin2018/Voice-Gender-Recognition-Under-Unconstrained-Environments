@@ -1,108 +1,97 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jul 30 12:42:48 2023
+Script para la generación de base de datos de imágenes RGB
+Este script convierte archivos de audio en imágenes de espectrogramas Mel
+y organiza una base de datos de imágenes estructurada para entrenamiento
+y prueba de modelos de aprendizaje profundo.
 
-Construcciòn de base de datos, generando imagenes de MelSpectrograma 
-y guardando en el archivo en directorio de base de datos
-
-dataset/baseMelSpec
-                  |
-                  |--- test 
-                         |
-                         |- Ae. aegypti   --- 500 imagenes 
-                         |- Ae. albopictus  --- 500 imagenes 
-                         |- An. arabienses  --- 500 imagenes
-                         |- An. gambiae     --- 500 imagenes
-                         |- C. pipiens     --- 500 imagenes
-                         |- C. quinquefasciatus --- 500 imagenes
-                 |--- train 
-                       |
-                       |- Ae. aegypti   --- 7000 imagenes 
-                       |- Ae. albopictus  --- 7000 imagenes 
-                       |- An. arabienses  --- 7000 imagenes
-                       |- An. gambiae     --- 7000 imagenes
-                       |- C. pipiens     --- 7000 imagenes
-                       |- C. quinquefasciatus --- 7000 imagenes
-                        
-                                
+Estructura de la base de datos generada:
+dataset/baseMelSpec/
+    ├── test/
+    │   ├── male/    (500 imágenes)
+    │   └── female/  (500 imágenes)
+    └── train/
+        ├── male/    (7000 imágenes)
+        └── female/  (7000 imágenes)
 
 @author: Mariko Nakano 
-
 """
-import librosa
-import numpy as np
-import os
-import matplotlib.pyplot as plt
-from PIL import Image
-from tqdm import tqdm
 
-###### Ruta de datos ######
-### Ruta de datos de sonido
-sound_path= '../dataset/Sonido/'
-### Ruta de base de datos que va a generar
-dataset_path = '../dataset/baseMelSpec/'
+# Importación de librerías necesarias
+import librosa  # Para procesamiento de audio
+import numpy as np  # Para operaciones numéricas
+import os  # Para operaciones de sistema de archivos
+import matplotlib.pyplot as plt  # Para visualización
+from PIL import Image  # Para procesamiento de imágenes
+from tqdm import tqdm  # Para barras de progreso
 
-#### Características sonido
-sr = 16000
-n_data = 5000   # numero de datos
+# Configuración de rutas
+sound_path = '../dataset/Sonido/'  # Ruta de datos de audio
+dataset_path = '../dataset/baseMelSpec/'  # Ruta de base de datos a generar
 
-##### Parametros de Melspectrograma
-n_fft = 400
-win_length = n_fft   # predeterminado 
-hop_length = 22
-window = "hann" # predeterminado
-n_mels =224
-n_tbin = int(n_data/hop_length)+1
+# Parámetros de procesamiento de audio
+sr = 16000  # Frecuencia de muestreo
+n_data = 5000  # Número de muestras por audio
 
-##### Determinar el numero de datos de entrenamiento y el número de datos de prueba
-Num_Train = 7000
-Num_Test = 500
+# Parámetros para el cálculo del espectrograma Mel
+n_fft = 400  # Tamaño de la ventana FFT
+win_length = n_fft  # Longitud de la ventana de análisis
+hop_length = 22  # Tamaño del salto entre ventanas
+window = "hann"  # Tipo de ventana
+n_mels = 224  # Número de bandas Mel
+n_tbin = int(n_data/hop_length)+1  # Número de bins temporales
 
-#### Inspeccionar si existe directory y si no existe este directory se genera
+##### Determinar el numero de datos de entrenamiento y prueba
+Num_Train = 7000  # Número de muestras para entrenamiento
+Num_Test = 500  # Número de muestras para prueba
+
+# Crear estructura de directorios
 os.makedirs(dataset_path, exist_ok=True)
 os.makedirs(os.path.join(dataset_path,"train"), exist_ok=True)
 os.makedirs(os.path.join(dataset_path,"test"), exist_ok=True)
 
-especie = ["Ae. aegypti", "Ae. albopictus", "An. arabiensis","An. gambiae","C. pipiens","C. quinquefasciatus"]
+# Definir clases
+especie = ["male", "female"]
 
-#Generar una lista de 2D vacia
-file_lists =[[] for i in range(len(especie))]
+# Generar lista 2D vacía para almacenar archivos
+file_lists = [[] for i in range(len(especie))]
 
-#file_lists[0] : lista de todos los archivos de Ae. aegypti  15000
-#file_lists[1] : lista de todos los archivos de Ae. albopictus 15000
-#file_lists[0] : lista de todos los archivos de An. arabiensis 7500
-#file_lists[0] : lista de todos los archivos de Ae. gambiae    7500
-#file_lists[0] : lista de todos los archivos de C. pipiens     7500
-#file_lists[0] : lista de todos los archivos de C. quiquefasciatus  7500
+def save_SPimage(spec, i, sr, mode, file):
+    """
+    Guarda un espectrograma como imagen en la carpeta correspondiente
+    
+    Args:
+        spec (ndarray): Espectrograma a guardar
+        i (int): Índice de la clase
+        sr (int): Frecuencia de muestreo
+        mode (str): Modo ('train' o 'test')
+        file (str): Nombre base del archivo
+    """
+    # Generar directorio correspondiente al índice i
+    ruta = os.path.join(dataset_path, mode, especie[i])
+    os.makedirs(ruta, exist_ok=True)
+    
+    # Configuración de la figura
+    fig, ax = plt.subplots()
+    img = librosa.display.specshow(spec, sr=sr)
+    file = file + ".jpg"
+    plt.savefig(os.path.join(ruta,file), dpi=90, bbox_inches="tight", pad_inches=0)
+    plt.close()
 
-# Aleatoriamente obtener 7000 archivos de cada especie
-np.random.seed(seed=0)
+# Aleatorizar la selección de archivos
+np.random.seed(seed=0)  # Para reproducibilidad
 for i in range(len(especie)):
     list_especie = os.listdir((os.path.join(sound_path, especie[i])))
     np.random.shuffle(list_especie)
     file_lists[i].append(list_especie)
-    
-#### Generar Imagenes de entrenamiento 
-plt.rcParams["figure.figsize"] = [3.50, 3.50]   # imagen cuadrada es más conveniente
+
+# Configuración de visualización
+plt.rcParams["figure.figsize"] = [3.50, 3.50]
 plt.rcParams["figure.autolayout"] = True
 
-#### Función para generar imagen y guardar en archivo correspondiente
-def save_SPimage(spec, i, sr, mode, file):
-    ### Generar directorio que corresponde a indice i
-    ruta = os.path.join(dataset_path,mode,especie[i])
-    os.makedirs(ruta, exist_ok=True)
-    
-    ### configuracion de figuras ####
-    fig, ax = plt.subplots()
-    img=librosa.display.specshow(spec,sr=sr)  # Revisar que tipo de seudocolor proporciona mejor resultados
-    file = file+".jpg"
-    plt.savefig(os.path.join(ruta,file), dpi=90, bbox_inches ="tight", pad_inches =0)  # Esta configuración es más conveniente
-    #plt.show()
-    plt.close()
+print(" Construcción de base de datos de imágenes")
 
 #### Usando los primeros 7000 archivos de cada especie, generar datos de entrenamiento
-
-print(" Construccion de base de datos de imagenes")
 '''
 print(" Construccion de conjunto de entrenamiento")
 for i in tqdm(range(len(especie))):   # i es indice de especie i=0: Ae.aegypti, 1: ,,,, 5
@@ -143,5 +132,5 @@ for i in tqdm(range(len(especie))):   # i es indice de especie i=0: Ae.aegypti, 
             log_mspec = librosa.power_to_db(melspec)
             # Guardar cada imagen en un archivo
             save_SPimage(log_mspec,i,sr, "test",file )
-     
+
 

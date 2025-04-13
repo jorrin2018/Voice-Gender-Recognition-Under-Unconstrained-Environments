@@ -1,47 +1,55 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Oct 18 08:48:06 2023
+Script para la generación y almacenamiento de características MFCC
+Este script extrae los Coeficientes Cepstrales en las Frecuencias de Mel (MFCC)
+de archivos de audio y los guarda como imágenes para su uso posterior en
+tareas de clasificación de género de voz.
+
+Características:
+- Extracción de MFCC usando librosa
+- Normalización y procesamiento de características
+- Organización por género y conjunto de datos
+- Visualización y almacenamiento optimizado
 
 @author: MCIM
 """
 
-"""
-Created on Sun Jul 30 12:42:48 2023
+import librosa  # Para procesamiento de señales de audio
+import numpy as np  # Para operaciones numéricas
+import matplotlib.pyplot as plt  # Para visualización
+from PIL import Image  # Para procesamiento de imágenes
+import os  # Para operaciones de sistema de archivos
 
-Genera MFCC (db)
-Displegar en la pantalla
-Guardar en archivo como imagen
-
-@author: Mariko Nakano 
-
-"""
-import librosa
-import numpy as np
-import matplotlib.pyplot as plt
-from PIL import Image
-import os
-
-
+# Definición de rutas para los conjuntos de datos
 carpeta_raiz_train_female = 'E:/JORRIN/TESIS/DATASET/AUDIOS/prueba/train/female'
 carpeta_raiz_train_male = 'E:/JORRIN/TESIS/DATASET/AUDIOS/prueba/train/male'
 carpeta_raiz_test_female = 'E:/JORRIN/TESIS/DATASET/AUDIOS/prueba/test/female'
 carpeta_raiz_test_male = 'E:/JORRIN/TESIS/DATASET/AUDIOS/prueba/test/male'
+
+# Rutas para guardar los MFCC generados
 output_folder_train_female = 'E:/JORRIN/TESIS/DATASET/IMAGENES/mfcc/train/female'
 output_folder_train_male = 'E:/JORRIN/TESIS/DATASET/IMAGENES/mfcc/train/male'
 output_folder_test_female = 'E:/JORRIN/TESIS/DATASET/IMAGENES/mfcc/test/female'
 output_folder_test_male = 'E:/JORRIN/TESIS/DATASET/IMAGENES/mfcc/test/male'
 
 def hacer_mfcc(carpeta_raiz, output_folder):
-    #### Parametros de datos
-    sr = 16000
-    n_data = 48000   # numero de datos
-    ##### Parametros de Melspectrograma
-    n_fft = 1024
-    win_length = n_fft   # predeterminado 
-    hop_length = 160
-    window = "hann" # predeterminado
+    """
+    Genera y guarda los MFCC de los archivos de audio en una carpeta
+    
+    Args:
+        carpeta_raiz (str): Ruta a la carpeta con los archivos WAV
+        output_folder (str): Ruta donde se guardarán las imágenes MFCC
+    """
+    # Parámetros de procesamiento de audio
+    sr = 16000  # Frecuencia de muestreo
+    n_data = 48000  # Número de muestras
+    
+    # Parámetros para el cálculo de MFCC
+    n_fft = 1024  # Tamaño de la ventana FFT
+    win_length = n_fft  # Longitud de la ventana de análisis
+    hop_length = 160  # Tamaño del salto entre ventanas
+    window = "hann"  # Tipo de ventana
        
-        
     for elemento in os.listdir(carpeta_raiz):
         if elemento.endswith('wav'):
             
