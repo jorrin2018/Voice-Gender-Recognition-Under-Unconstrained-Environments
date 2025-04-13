@@ -1,0 +1,18 @@
+# Librerías principales
+numpy>=1.20.0  # Para operaciones numéricas
+pandas>=1.3.0  # Para manejo de datos estructurados
+matplotlib>=3.4.0  # Para visualización
+pillow>=8.3.0  # Para procesamiento de imágenes
+
+# Procesamiento de audio
+librosa>=0.8.0  # Para procesamiento de señales de audio
+soundfile>=0.10.3  # Dependencia de librosa para lectura de audio
+
+# Deep Learning
+torch>=1.7.0  # PyTorch para redes neuronales
+torchvision>=0.8.0  # Utilidades de PyTorch para visión por computadora
+
+# Utilidades
+tqdm>=4.62.0  # Para barras de progreso
+scikit-learn>=0.24.0  # Para utilidades de machine learning
+json>=2.0.9  # Para manejo de archivos JSON
